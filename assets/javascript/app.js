@@ -12,6 +12,7 @@
   document.getElementById('clock').innerHTML =
   `${month}/${date}/${year} ${h + ":" + m + ":" + s}`;
   let t = setTimeout(startTime, 500);
+  return `${month}/${date}/${year} ${h + ":" + m + ":" + s}`
 }
 function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
@@ -115,20 +116,14 @@ db.collection('Trains').onSnapshot(({docs}) => {
         let minAwayCell = newrow.insertCell(4);
           nextCell.innerHTML = (`${nextArrivals[i]}`)
           nextCell.setAttribute(`id`, `nextCell${i}`) //gave each "next" cell an ID?
-          minAwayCell.innerHTML = (`${minutesAway[i]}`)
+          minAwayCell.innerHTML = (minutesAway[i])
           nextCell.setAttribute(`id`, `minAwayCell${i}`) //gave each minAway cell an ID?
     })
 })
 
-//Updates the table every 5 seconds:
+//Timestamps the table every 5 seconds; doesn't update table values yet.
 let updater = function(){
-  document.getElementById("updated").textContent = `Last updated: ${new Date()}`
-  db.collection('Trains').doc(`Gotham Monorail`).set({
-    name : `Gotham Monorail`,
-    destination : `Gotham` ,
-    firstTime : `01:00`,
-    frequency : `10`,
-  })
+  document.getElementById("updated").textContent = `Last updated: ${startTime()}`
   let t = setTimeout(updater, 5000);
 }
 updater()
