@@ -136,12 +136,16 @@ db.collection('Trains').onSnapshot(({docs}) => {
 //Event Listener for the form
 document.getElementById(`submitform`).addEventListener('click', e=>{
   e.preventDefault()
-
   //check that form is filled out
   if (document.getElementById(`newName`).value && document.getElementById(`newDestination`).value &&
      document.getElementById(`newFirstTime`).value && document.getElementById(`newFrequency`).value) {
-      
-  
+      //add to collection Trains in db
+      db.collection('Trains').doc(`${document.getElementById(`newName`).value}`).set({
+        name : `${document.getElementById(`newName`).value}`,
+        destination : `${document.getElementById(`newDestination`).value}` ,
+        firstTime : `${document.getElementById(`newFirstTime`).value}`,
+        frequency : `${document.getElementById(`newFrequency`).value}`,
+      })
   } else {
     M.toast({html: 'Please fill out the entire form before hitting "submit".'})
   }

@@ -1,6 +1,4 @@
-.container {
 
-}
 
 /* Header*/
 .heading {
@@ -41,4 +39,8 @@
   margin: 3px;
   margin:  rgb(195, 196, 255);
   background-color: whitesmoke;
+}
+
+.inputfield {
+  text-indent: 10px;
 }
