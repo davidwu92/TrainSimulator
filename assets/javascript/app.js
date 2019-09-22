@@ -64,58 +64,20 @@ let destinations = []
 let frequencies = []
 let nextArrivals = []
 let minutesAway = []
-let trainCount = 0 //global variable to keep count of # of trains
 
-//CONSOLE LOGGING each document's object
-db.collection('Trains').get()
-.then(({docs})=> {
-  docs.forEach(train=>{
-    console.log(train.data())
-  })
-})
-
-// ON SNAPSHOT, these are created
+// ON SNAPSHOT, Table Updates:
 db.collection('Trains').onSnapshot(({docs}) => {
   document.getElementById('trainTable').innerHTML = (``) //clear out the table data first
     docs.forEach(function traininfo(train, i){
-      trainCount++ //add one to trainCount
+
+      //update global arrays w/ each document's data
       trainNames[i] = train.data().name;
       destinations[i] = train.data().destination;
       frequencies[i] = train.data().frequency;  
 
-      //first departure of the day Calculations
-      let firstTime = train.data().firstTime.split(":"); //makes array of 1st departure in [HR, MIN]
-        firstTime[0] = parseInt(firstTime[0])
-        firstTime[1] = parseInt(firstTime[1])
-      let firstTimeInMin = firstTime[0]*60 + firstTime[1]; //1st departure in min after midnight
-      console.log('first departure in min past midnight:' + firstTimeInMin)
-      console.log (`Train arrives every ${parseInt(frequencies[i])} min`)
-
-      //Minutes til next train:
-      let today = new Date();
-      let currentTimeinMin = today.getHours()*60 + today.getMinutes(); //current time in min past midnight
-      console.log('current time in min past midnight:'+ currentTimeinMin);
-      if (currentTimeinMin > firstTimeInMin) {
-        minutesAway[i] = parseInt(frequencies[i])- ((currentTimeinMin - firstTimeInMin)%parseInt(frequencies[i]));
-        console.log('Min til next train:' + minutesAway[i]);
-      } else if (currentTimeinMin < firstTimeInMin){
-        minutesAway[i] = parseInt(frequencies[i]) - ((currentTimeinMin + 1440 - firstTimeInMin)%parseInt(frequencies[i]));
-        console.log('Min til next train:' + minutesAway[i]);
-      } else {
-        minutesAway[i] = 0;
-        console.log('Min til next train:' + minutesAway[i]);
-      }
-    
-      //Next Train's Arrival Time:
-      let nextArrivalTime = currentTimeinMin + minutesAway[i];
-      let arrivalHour = Math.floor(nextArrivalTime/60);
-      let arrivalMin = nextArrivalTime%60;
-      if (arrivalMin <10) {arrivalMin = "0" + arrivalMin} //under 10 min needs a zero
-      nextArrivals[i] = arrivalHour + `:` + arrivalMin;
-      
-      //Adding rows to table
+      //ADD rows to table
       let newrow = document.getElementById('trainTable').insertRow(i)
-
+      //Update the 3 cells that aren't time-sensitive
       let nameCell = newrow.insertCell(0);
       let destinationCell = newrow.insertCell(1);
       let freqCell = newrow.insertCell(2);
@@ -123,15 +85,53 @@ db.collection('Trains').onSnapshot(({docs}) => {
         destinationCell.innerHTML = (`${destinations[i]}`);
         freqCell.innerHTML = (`${frequencies[i]}`);
 
-      //next- and minway- Cells need to somehow update each minute? 
-      let nextCell = newrow.insertCell(3);
-      let minawayCell = newrow.insertCell(4);
-        nextCell.innerHTML = (`${nextArrivals[i]}`)
-        nextCell.setAttribute(`id`, `nextCell${i}`) //gave each "next" cell an ID
-        minawayCell.innerHTML = (`${minutesAway[i]}`)
-        nextCell.setAttribute(`id`, `minawayCell${i}`)
+      //first departure of the day Calculations
+      let firstTime = train.data().firstTime.split(":"); //makes array of 1st departure in [HR, MIN]
+        firstTime[0] = parseInt(firstTime[0])
+        firstTime[1] = parseInt(firstTime[1])
+      let firstTimeInMin = firstTime[0]*60 + firstTime[1]; //1st departure in min after midnight
+
+      //TIME-DEPENDENT Calculations: next arrival and minutes til arrival
+        //Updating global array for min til train's next arrival
+        let today = new Date();
+        let currentTimeinMin = today.getHours()*60 + today.getMinutes(); //current time in min past midnight
+        if (currentTimeinMin > firstTimeInMin) { //Making minutesAway[i] # min til next train
+          minutesAway[i] = parseInt(frequencies[i])- ((currentTimeinMin - firstTimeInMin)%parseInt(frequencies[i]));
+        } else if (currentTimeinMin < firstTimeInMin){
+          minutesAway[i] = parseInt(frequencies[i]) - ((currentTimeinMin + 1440 - firstTimeInMin)%parseInt(frequencies[i]));
+        } else { // parseInt(frequencies[i]) gives the train's freq as integer
+          minutesAway[i] = 0;
+        }
+      
+        //Updating global array for train's next arrival time:
+        let nextArrivalTime = currentTimeinMin + minutesAway[i];
+        let arrivalHour = Math.floor(nextArrivalTime/60);
+        let arrivalMin = nextArrivalTime%60;
+        if (arrivalMin <10) {arrivalMin = "0" + arrivalMin} //under 10 min needs a zero
+        nextArrivals[i] = arrivalHour + `:` + arrivalMin;
+        
+        //next- and minAway- Cells need to somehow update each minute? 
+        let nextCell = newrow.insertCell(3);
+        let minAwayCell = newrow.insertCell(4);
+          nextCell.innerHTML = (`${nextArrivals[i]}`)
+          nextCell.setAttribute(`id`, `nextCell${i}`) //gave each "next" cell an ID?
+          minAwayCell.innerHTML = (`${minutesAway[i]}`)
+          nextCell.setAttribute(`id`, `minAwayCell${i}`) //gave each minAway cell an ID?
     })
 })
+
+//Updates the table every 5 seconds:
+let updater = function(){
+  document.getElementById("updated").textContent = `Last updated: ${new Date()}`
+  db.collection('Trains').doc(`Gotham Monorail`).set({
+    name : `Gotham Monorail`,
+    destination : `Gotham` ,
+    firstTime : `01:00`,
+    frequency : `10`,
+  })
+  let t = setTimeout(updater, 5000);
+}
+updater()
 
 //Event Listener for the form
 document.getElementById(`submitform`).addEventListener('click', e=>{
