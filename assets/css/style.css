@@ -1,0 +1,39 @@
+/* Header*/
+.heading {
+  background-color: rgb(255, 193, 77);
+  text-align: center;
+}
+
+/*Train Info table*/
+.traininfo {
+  background-color: rgb(255, 188, 188);
+  text-indent: 7px;
+  border-style: solid;
+  border-radius: 2px;
+  padding-bottom: 1px;
+}
+
+.traintable {
+  width: 99.5%;
+  padding: 3px;
+  margin: 3px;
+  margin: rgb(255, 188, 188);
+  background-color: whitesmoke;
+}
+
+/*New Train Space*/
+.newtrain {
+  background-color: rgb(195, 196, 255);
+  text-indent: 8px;
+  border-style: solid;
+  border-radius: 2px;
+  padding-bottom: 1px;
+}
+
+/*New train form*/
+.trainform {
+  padding: 3px;
+  margin: 3px;
+  margin:  rgb(195, 196, 255);
+  background-color: whitesmoke;
+}

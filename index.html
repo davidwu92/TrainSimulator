@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Train Time Simulator</title>
+  <link rel="stylesheet" href="./assets/css/reset.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+  <div class="container"> <!--All page content in here-->
+    <div class="row heading"> <!--Heading-->
+      <h3>Train Schedules</h3>
+      <h5>Detailing the schedules of trains across the DC Universe</h5>
+    </div>
+    <br>
+    <div class="row"><!--Train Info Table-->
+      <div class="traininfo">
+        <h5>Train Information</h5>
+        <table class="highlight traintable responsive-table"> 
+          <thead> <!-- Table Head -->
+            <tr>
+                <th>Train Name</th>
+                <th>Destination</th>
+                <th>Frequency (min)</th>
+                <th>Next Arrival</th>
+                <th>Minutes Away</th>
+            </tr>
+          </thead>
+          <tbody id = "trainTable">
+            <tr> <!--Example table row-->
+              <td>Train 1</td>
+              <td>Gotham</td>
+              <td>10 minutes</td>
+              <td>2:00 PM</td>
+              <td>27</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <div class="row"> <!--New Train Form-->
+      <div class="newtrain">
+        <h5>Add a new train</h5>
+      <form id="newtrain" class = "trainform">
+        <p>Train Name</p>
+        <input id="newName" type="text">
+        <p>Destination</p>
+        <input id="newDestination" type="text">
+        <p>First Train Time (HH:mm - military time)</p>
+        <input id="newFirstTime" type="text">
+        <p>Frequency (min)</p>
+        <input id="newFrequency" type="text">
+        <input type="submit" value="Submit">
+      </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-firestore.js"></script>
+  <!-- Javascript -->
+  <script src="./assets/javascript/app.js"></script>
+  <!-- Materialize CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+</body>
+</html>
