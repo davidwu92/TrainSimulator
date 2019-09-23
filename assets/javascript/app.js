@@ -39,6 +39,7 @@ db.collection('Trains').doc(`Gotham Monorail`).set({
   destination : `Gotham` ,
   firstTime : `01:00`,
   frequency : `10`,
+  updatecount : 0, //Should be updating via updater function, but is not.
 })
 db.collection('Trains').doc(`Supertrain`).set({
   name : `Supertrain`,
@@ -59,12 +60,13 @@ db.collection('Trains').doc(`Keystone Subway`).set({
   frequency : `47`,
 })
 
-//Global variables I might need
+//Global arrays for table info
 let trainNames = []
 let destinations = []
 let frequencies = []
 let nextArrivals = []
 let minutesAway = []
+let updatecount = 0 //attempting to update Gotham's updatecount
 
 // ON SNAPSHOT, Table Updates:
 db.collection('Trains').onSnapshot(({docs}) => {
@@ -121,10 +123,15 @@ db.collection('Trains').onSnapshot(({docs}) => {
     })
 })
 
-//Timestamps the table every 5 seconds; doesn't update table values yet.
+//Timestamps the table every 10 seconds; doesn't update table values yet?
 let updater = function(){
   document.getElementById("updated").textContent = `Last updated: ${startTime()}`
-  let t = setTimeout(updater, 5000);
+  db.collection('Trains.').doc('Gotham Monorail').set({
+    updatecount : `${updatecount}`
+  })
+  updatecount++
+  console.log(updatecount) //updatecount is going up, but Gotham's document is not updating.
+  let t = setTimeout(updater, 10000);
 }
 updater()
 
@@ -141,6 +148,10 @@ document.getElementById(`submitform`).addEventListener('click', e=>{
         firstTime : `${document.getElementById(`newFirstTime`).value}`,
         frequency : `${document.getElementById(`newFrequency`).value}`,
       })
+      document.getElementById(`newName`).value = ``
+      document.getElementById(`newDestination`).value = ``
+      document.getElementById(`newFirstTime`).value = ``
+      document.getElementById(`newFrequency`).value = ``
   } else {
     M.toast({html: 'Please fill out the entire form before hitting "submit".'})
   }

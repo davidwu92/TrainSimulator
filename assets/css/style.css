@@ -12,6 +12,7 @@
   text-emphasis: none;
   font-size: x-small;
 }
+
 /*Train Info Table*/
 .traininfo {
   background-color: rgb(255, 188, 188);
@@ -20,6 +21,7 @@
   border-radius: 2px;
   padding-bottom: 1px;
 }
+
 
 /*table settings*/
 .traintable {
